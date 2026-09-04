@@ -1,0 +1,6 @@
+[
+    {
+        "question": "What is Python?",
+        "answer": "Python is a **programming language** used to tell computers what to do.\n\n### In simple words:\nIt lets people write instructions for computers in a way that is easier to read than many other languages.\n\n### What Python is used for:\n- building websites\n- analyzing data\n- automating tasks\n- making games\n- artificial intelligence and machine learning\n\n### Why people like it:\n- **easy to learn**\n- **readable**\n- **popular** in school, research, and industry\n\n### Short example:\n```python\nprint(\"Hello, world!\")\n```\nThis tells the computer to display the text **Hello, world!**\n\nIf you want, I can also explain **how Python works** or **how to start learning it**."
+    }
+]
