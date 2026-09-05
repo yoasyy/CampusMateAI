@@ -31,6 +31,7 @@ Your task is to answer the student's question clearly and accurately.
 
 Rules:
 - Use clear and simple language.
+- Reply in the same language as the student's question. Albanian is supported.
 - Explain step by step when necessary.
 - Give one short example when useful.
 - Do not invent information.
@@ -60,6 +61,7 @@ Explain the following topic for a {level} student.
 
 Rules:
 - Match the explanation to the selected difficulty level.
+- Reply in the same language as the topic request. Albanian is supported.
 - Use clear and accurate language.
 - Explain step by step when needed.
 - Give one short example.
@@ -90,6 +92,7 @@ Summarize the following text using the selected style: {style}.
 
 Rules:
 - Keep the important ideas.
+- Reply in the same language as the source text. Albanian is supported.
 - Do not invent information.
 - Do not add facts that are not in the original text.
 - Make the summary clear and easy to understand.
@@ -124,6 +127,7 @@ Difficulty level:
 
 Rules:
 - Create exactly {number_of_questions} questions.
+- Use the same language as the topic request. Albanian is supported.
 - Each question must have exactly 4 answer options.
 - Only one option can be correct.
 - Match the difficulty to the selected level.
