@@ -15,8 +15,14 @@ from data_store import (
 BASE_DIR = Path(__file__).resolve().parent
 PLAIN_FRONTEND_DIR = BASE_DIR / "frontend" / "plain"
 REACT_FRONTEND_DIR = BASE_DIR / "frontend" / "react"
+LANDING_PAGE = BASE_DIR / "frontend" / "landing.html"
 
 app = Flask(__name__)
+
+MAX_QUESTION_LENGTH = 2000
+MAX_TOPIC_LENGTH = 200
+MAX_SUMMARY_LENGTH = 12000
+MAX_QUIZ_QUESTIONS = 20
 
 
 def _json_error(message, status_code=400):
@@ -34,11 +40,25 @@ def _stats_payload():
 
 @app.get("/")
 def plain_index():
+    return send_from_directory(BASE_DIR / "frontend", "landing.html")
+
+
+@app.get("/landing.css")
+def landing_static():
+    return send_from_directory(BASE_DIR / "frontend", "landing.css")
+
+
+@app.get("/app")
+@app.get("/app/<view>")
+def plain_app(view="ask"):
     return send_from_directory(PLAIN_FRONTEND_DIR, "index.html")
 
 
 @app.get("/react")
-def react_index():
+@app.get("/react/<view>")
+def react_index(view=None):
+    if view in {"styles.css", "app.jsx", "index.html"}:
+        return send_from_directory(REACT_FRONTEND_DIR, view)
     return send_from_directory(REACT_FRONTEND_DIR, "index.html")
 
 
@@ -61,9 +81,22 @@ def bootstrap():
     })
 
 
+@app.get("/api/health")
+def health():
+    return jsonify({"ok": True, "service": "CampusMate AI", "status": "healthy"})
+
+
 @app.get("/api/history")
 def history():
-    return jsonify({"ok": True, "history": load_history()})
+    query = request.args.get("q", "").strip().lower()
+    entries = load_history()
+    if query:
+        entries = [
+            item for item in entries
+            if query in str(item.get("question", "")).lower()
+            or query in str(item.get("answer", "")).lower()
+        ]
+    return jsonify({"ok": True, "history": entries, "query": query})
 
 
 @app.get("/api/stats")
@@ -79,6 +112,8 @@ def ask():
 
     if not question:
         return _json_error("Question cannot be empty.")
+    if len(question) > MAX_QUESTION_LENGTH:
+        return _json_error(f"Question must be {MAX_QUESTION_LENGTH} characters or fewer.")
 
     try:
         answer = ask_ai(question)
@@ -103,6 +138,8 @@ def explain():
 
     if not topic:
         return _json_error("Topic cannot be empty.")
+    if len(topic) > MAX_TOPIC_LENGTH:
+        return _json_error(f"Topic must be {MAX_TOPIC_LENGTH} characters or fewer.")
 
     if level not in {"beginner", "intermediate", "advanced"}:
         return _json_error("Select a valid difficulty level.")
@@ -128,6 +165,8 @@ def summarize():
 
     if not text:
         return _json_error("Text cannot be empty.")
+    if len(text) > MAX_SUMMARY_LENGTH:
+        return _json_error(f"Text must be {MAX_SUMMARY_LENGTH} characters or fewer.")
 
     if style not in {
         "short",
@@ -158,6 +197,8 @@ def quiz_generate():
 
     if not topic:
         return _json_error("Topic cannot be empty.")
+    if len(topic) > MAX_TOPIC_LENGTH:
+        return _json_error(f"Topic must be {MAX_TOPIC_LENGTH} characters or fewer.")
 
     if level not in {"beginner", "intermediate", "advanced"}:
         return _json_error("Select a valid difficulty level.")
@@ -167,8 +208,8 @@ def quiz_generate():
     except (TypeError, ValueError):
         return _json_error("Please enter a valid number of questions.")
 
-    if number_of_questions <= 0:
-        return _json_error("Number of questions must be greater than 0.")
+    if number_of_questions <= 0 or number_of_questions > MAX_QUIZ_QUESTIONS:
+        return _json_error(f"Number of questions must be between 1 and {MAX_QUIZ_QUESTIONS}.")
 
     try:
         quiz = generate_quiz(topic, level, number_of_questions)

@@ -78,8 +78,11 @@ python web_app.py
 
 Then open:
 
-- `http://127.0.0.1:5000/` for the plain HTML/JavaScript UI
-- `http://127.0.0.1:5000/react` for the React UI
+- `http://127.0.0.1:5000/` for the CampusMate AI landing page
+- `http://127.0.0.1:5000/app/ask` for the plain HTML/JavaScript workspace
+- `http://127.0.0.1:5000/react/ask` for the React workspace
+
+The landing page links to dedicated Ask AI, Explain, Summarize, Quiz, History, and Stats pages.
 
 ## Data Storage
 
@@ -106,6 +109,8 @@ Quiz scoring, input validation, statistics, and data storage are handled by Pyth
 ## Security and Responsible AI
 
 The OpenAI API key is stored securely in a `.env` file and is not included in the source code.
+
+For a different speed/cost tradeoff, set `CAMPUSMATE_MODEL` in `.env`. The default is `gpt-5.4-mini`.
 
 Users should not enter passwords, private information, confidential information, or other sensitive data.
 

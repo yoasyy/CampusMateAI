@@ -11,5 +11,59 @@
     {
         "question": "Java Script",
         "answer": "It looks like you mean **JavaScript**.\n\n**JavaScript** is a programming language used mainly to make websites interactive.  \nFor example, it can:\n- make buttons work,\n- show pop-up messages,\n- update page content without reloading,\n- create animations and forms.\n\n### Simple example\n```javascript\nlet name = \"Ali\";\nconsole.log(\"Hello, \" + name);\n```\n\nThis prints:\n```javascript\nHello, Ali\n```\n\n### Key idea\n- **HTML** = structure of a webpage\n- **CSS** = style/design\n- **JavaScript** = behavior/interactivity\n\nIf you want, I can also explain:\n1. **JavaScript basics**\n2. **difference between Java and JavaScript**\n3. **how to start learning JavaScript**"
+    },
+    {
+        "question": "What is python",
+        "answer": "Python is a **programming language** used to give instructions to computers.\n\n### In simple terms:\nIt lets you write code to make computers do tasks like:\n- build websites\n- analyze data\n- create games\n- automate boring work\n- make apps and AI tools\n\n### Why people like Python:\n- **Easy to read and learn**\n- **Works for many different tasks**\n- **Popular in schools, companies, and research**\n\n### Small example:\n```python\nprint(\"Hello, world!\")\n```\nThis tells the computer to display: **Hello, world!**\n\nIf you want, I can also explain **Python for beginners** or show **how to write your first Python program**.",
+        "student_name": "Asja"
+    },
+    {
+        "question": "What is the date today",
+        "answer": "Today’s date is **September 5, 2026**.",
+        "student_name": "Asja"
+    },
+    {
+        "question": "What is the last Iphone",
+        "answer": "The **latest iPhone model I know about is the iPhone 16 series**.\n\nThat includes models like:\n- **iPhone 16**\n- **iPhone 16 Plus**\n- **iPhone 16 Pro**\n- **iPhone 16 Pro Max**\n\nIf you mean the **single newest iPhone**, it is usually the **most recent Pro Max model** in the latest series.\n\n**Example:** If someone says “I have the last iPhone,” they might mean the **iPhone 16 Pro Max**.\n\nIf you want, I can also tell you **which iPhone is best for students** or compare the latest iPhones.",
+        "student_name": "Asja"
+    },
+    {
+        "question": "What is Python",
+        "answer": "Python is a **programming language** used to write instructions for computers.\n\n### In simple terms:\nYou can use Python to:\n- make websites\n- analyze data\n- build apps\n- automate tasks\n- create games\n- work with AI and machine learning\n\n### Why people like Python:\n- **Easy to read**\n- **Simple to learn**\n- **Very popular**\n- **Useful for many different jobs**\n\n### Short example:\n```python\nprint(\"Hello, world!\")\n```\nThis tells the computer to display the message **Hello, world!**\n\nIf you want, I can also explain **Python for beginners** or show you **how to run your first Python program**.",
+        "student_name": "Asja"
+    },
+    {
+        "question": "What is Python",
+        "answer": "Python is a **programming language** used to tell computers what to do.\n\n### In simple words:\nPython helps you write instructions for a computer in a way that is relatively easy for people to read and understand.\n\n### What people use Python for:\n- making websites\n- building apps\n- analyzing data\n- automating tasks\n- artificial intelligence and machine learning\n- games and simple scripts\n\n### Why Python is popular:\n- it has simple, readable syntax\n- it is good for beginners\n- it is widely used in industry and school\n\n### Short example:\n```python\nprint(\"Hello, world!\")\n```\nThis tells the computer to display the words **Hello, world!**\n\nIf you want, I can also explain **how Python works** or **how to start learning it**.",
+        "student_name": "Asja"
+    },
+    {
+        "question": "what is python",
+        "answer": "Python is a **programming language** used to tell computers what to do.\n\n### In simple words:\nIt lets you write instructions for things like:\n- building websites\n- analyzing data\n- making games\n- automating tasks\n- creating apps\n\n### Why people like Python:\n- **Easy to read** and learn\n- Uses **simple syntax**\n- Great for **beginners**\n- Used in many fields like AI, data science, and web development\n\n### Short example:\n```python\nprint(\"Hello, world!\")\n```\nThis tells Python to display the text **Hello, world!**\n\nIf you want, I can also explain **how Python works** or **why it is popular for beginners**.",
+        "student_name": "Asja"
+    },
+    {
+        "question": "How can i learn java for a week",
+        "answer": "You can learn **the basics of Java in 1 week** if you study every day and focus on the most important topics.\n\n## 7-day Java learning plan\n\n### Day 1: Setup and basics\n- Install **Java** and an editor like **VS Code** or **IntelliJ IDEA**\n- Learn:\n  - what Java is\n  - how to write a simple program\n  - `main()` method\n  - printing with `System.out.println()`\n\n**Example:**\n```java\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, Java!\");\n    }\n}\n```\n\n### Day 2: Variables and data types\n- Learn:\n  - `int`, `double`, `char`, `boolean`, `String`\n  - how to store and change values\n- Practice writing small programs like:\n  - age calculator\n  - name and class display\n\n### Day 3: Conditions\n- Learn:\n  - `if`, `else if`, `else`\n  - `==`, `>`, `<`, `>=`, `<=`\n- Try simple logic problems:\n  - check if a number is positive\n  - check pass/fail based on marks\n\n### Day 4: Loops\n- Learn:\n  - `for`\n  - `while`\n- Practice:\n  - print numbers 1 to 10\n  - sum of numbers\n  - multiplication table\n\n### Day 5: Methods\n- Learn:\n  - how to create and call methods\n  - parameters and return values\n- Example idea:\n  - a method that adds two numbers\n\n### Day 6: Arrays and strings\n- Learn:\n  - arrays\n  - basic string methods like `length()`, `toUpperCase()`, `equals()`\n- Practice:\n  - store 5 marks in an array\n  - find the highest number\n\n### Day 7: Review and small project\n- Review all topics\n- Build a small project, like:\n  - calculator\n  - student marks checker\n  - simple quiz program\n\n## Best way to study\n- Spend **2–4 hours daily**\n- Learn a topic, then **write code yourself**\n- Do small exercises every day\n- Don’t just watch videos — practice is important\n\n## Good learning resources\n- **Oracle Java tutorials**\n- **freeCodeCamp Java videos**\n- **GeeksforGeeks Java basics**\n- **W3Schools Java**\n\n## Important tip\nIn one week, you will not master Java, but you **can learn the fundamentals** and become ready for more practice.\n\nIf you want, I can also make you a **1-week Java timetable with daily tasks and exercises**.",
+        "created_at": "2026-09-05T21:59:16.780387+00:00",
+        "student_name": "Asja"
+    },
+    {
+        "question": "what is java",
+        "answer": "Java is a **programming language** used to build software.\n\n### In simple terms:\nIt lets people write instructions that a computer can follow. Java is used for:\n- mobile apps\n- websites\n- games\n- business software\n- Android apps\n\n### Why it is popular:\n- It works on many devices\n- It is widely used in schools and companies\n- It is good for learning programming basics\n\n### Short example:\nA Java program can be written to:\n- show “Hello, world!”\n- add two numbers\n- check if a user is old enough to sign in\n\nIf you want, I can also explain **Java vs JavaScript** or show a **very small Java code example**.",
+        "created_at": "2026-09-05T21:59:26.019033+00:00",
+        "student_name": "Asja"
+    },
+    {
+        "question": "Java",
+        "answer": "It looks like you just wrote **“Java”**.\n\nCould you tell me what you want help with in Java? For example:\n\n- learning Java basics\n- variables, loops, or conditions\n- classes and objects\n- arrays or ArrayLists\n- methods\n- exception handling\n- writing or fixing code\n\nIf you want, you can paste your Java question or code here and I’ll help.",
+        "created_at": "2026-09-05T21:59:43.835139+00:00",
+        "student_name": "Asja"
+    },
+    {
+        "question": "why do errorrs happen",
+        "answer": "Errors happen because something goes wrong between what we **want a system to do** and what it **actually does**.\n\nHere are common reasons:\n\n1. **Mistakes by people**  \n   Someone may type the wrong thing, write the wrong code, or set up something incorrectly.\n\n2. **Wrong instructions or logic**  \n   A program, machine, or process may be built with a bad rule or incorrect step.\n\n3. **Unexpected situations**  \n   The system may face something it was not designed for, like missing data, a broken file, or a bad internet connection.\n\n4. **Hardware or software problems**  \n   Devices can fail, programs can crash, or files can become corrupted.\n\n5. **Communication problems**  \n   Information may be misunderstood, incomplete, or lost.\n\n### Simple example\nIf you enter the number **10** but the system expects a **text name**, it may show an error because the input is not what it expected.\n\nIf you want, I can also explain **errors in programming**, **math**, or **everyday life** specifically.",
+        "created_at": "2026-09-05T22:04:55.296230+00:00",
+        "student_name": "Asja"
     }
 ]

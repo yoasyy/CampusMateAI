@@ -1,9 +1,11 @@
 {
-    "questions_asked": 2,
-    "quizzes_completed": 1,
-    "correct_answers": 2,
+    "questions_asked": 12,
+    "quizzes_completed": 3,
+    "correct_answers": 10,
     "incorrect_answers": 0,
     "quiz_scores": [
+        100.0,
+        100.0,
         100.0
     ]
 }

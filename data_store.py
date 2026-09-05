@@ -1,5 +1,6 @@
 import json
 from copy import deepcopy
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -64,7 +65,8 @@ def record_question(question, answer, student_name=None):
 
     entry = {
         "question": question,
-        "answer": answer
+        "answer": answer,
+        "created_at": datetime.now(timezone.utc).isoformat()
     }
 
     if student_name:

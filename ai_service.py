@@ -11,6 +11,16 @@ client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY")
 )
 
+MODEL = os.getenv("CAMPUSMATE_MODEL", "gpt-5.4-mini")
+
+
+def _create_response(prompt, max_output_tokens):
+    return client.responses.create(
+        model=MODEL,
+        input=prompt,
+        max_output_tokens=max_output_tokens
+    )
+
 
 def ask_ai(question):
 
@@ -31,10 +41,7 @@ Student question:
 {question}
 """
 
-    response = client.responses.create(
-        model="gpt-5.4-mini",
-        input=prompt
-    )
+    response = _create_response(prompt, max_output_tokens=650)
 
     print("\n--- API TOKEN USAGE ---")
     print("Input tokens:", response.usage.input_tokens)
@@ -64,10 +71,7 @@ Topic:
 {topic}
 """
 
-    response = client.responses.create(
-        model="gpt-5.4-mini",
-        input=prompt
-    )
+    response = _create_response(prompt, max_output_tokens=850)
 
     print("\n--- API TOKEN USAGE ---")
     print("Input tokens:", response.usage.input_tokens)
@@ -95,10 +99,7 @@ Text:
 {text}
 """
 
-    response = client.responses.create(
-        model="gpt-5.4-mini",
-        input=prompt
-    )
+    response = _create_response(prompt, max_output_tokens=650)
 
     print("\n--- API TOKEN USAGE ---")
     print("Input tokens:", response.usage.input_tokens)
@@ -149,10 +150,7 @@ Use this exact format:
 }}
 """
 
-    response = client.responses.create(
-        model="gpt-5.4-mini",
-        input=prompt
-    )
+    response = _create_response(prompt, max_output_tokens=1400)
 
     print("\n--- API TOKEN USAGE ---")
     print("Input tokens:", response.usage.input_tokens)

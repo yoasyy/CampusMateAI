@@ -8,18 +8,25 @@ const initialStats = {
   quiz_scores: []
 };
 
+const validViews = ["ask", "explain", "summarize", "quiz", "history", "stats"];
+const pathView = window.location.pathname.split("/").filter(Boolean).pop();
+const initialView = validViews.includes(pathView) ? pathView : "ask";
+const isSingleView = validViews.includes(pathView);
+
 function App() {
   const [studentName, setStudentName] = useState(localStorage.getItem("campusmate_name") || "");
-  const [activeTab, setActiveTab] = useState("ask");
+  const [activeTab, setActiveTab] = useState(initialView);
   const [history, setHistory] = useState([]);
   const [stats, setStats] = useState(initialStats);
   const [status, setStatus] = useState("Ready when you are.");
   const [output, setOutput] = useState("Pick a tool and start learning.");
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [questionDraft, setQuestionDraft] = useState("");
 
   const averageScore = useMemo(() => {
-    const scores = stats.quiz_scores || [];
+    const scores = (stats.quiz_scores || []).map(Number).filter(Number.isFinite);
     if (!scores.length) return 0;
     return scores.reduce((sum, value) => sum + value, 0) / scores.length;
   }, [stats]);
@@ -31,6 +38,10 @@ function App() {
         if (!data.ok) throw new Error("Could not load dashboard data.");
         setHistory(data.history || []);
         setStats(data.stats || initialStats);
+        setChatMessages((data.history || []).slice(-8).flatMap((item) => [
+          item.question ? { role: "user", text: item.question } : null,
+          item.answer ? { role: "assistant", text: item.answer } : null
+        ].filter(Boolean)));
       })
       .catch((error) => {
         setStatus(error.message);
@@ -41,6 +52,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem("campusmate_name", studentName);
   }, [studentName]);
+
+  useEffect(() => {
+    document.title = `${activeTab === "ask" ? "Ask AI" : activeTab[0].toUpperCase() + activeTab.slice(1)} | CampusMate AI`;
+  }, [activeTab]);
 
   const requestJson = async (path, payload) => {
     const response = await fetch(path, {
@@ -65,13 +80,29 @@ function App() {
     ["stats", "Stats"]
   ];
 
+  const toolOutput = () => (
+    <div className="tool-output">
+      <p className={status.includes("cannot") || status.includes("invalid") ? "notice" : ""}>{status}</p>
+      <pre>{output}</pre>
+    </div>
+  );
+
+  const chatView = chatMessages.length ? chatMessages.map((message, index) => (
+    <div className={`chat-message ${message.role}`} key={`${message.role}-${index}`}>
+      <span className="chat-avatar">{message.role === "user" ? "You" : "AI"}</span>
+      <div className="chat-bubble">{message.text}</div>
+    </div>
+  )) : <div className="chat-empty">Ask a question to start your study conversation.</div>;
+
   const refreshAfterQuestion = (question, answer) => {
     setHistory((current) => [...current, { question, answer, student_name: studentName || undefined }]);
   };
 
   const handleAsk = async () => {
-    const question = document.getElementById("questionInput").value.trim();
+    const question = questionDraft.trim();
     if (!question) return setStatus("Question cannot be empty.");
+    setQuestionDraft("");
+    setChatMessages((current) => [...current, { role: "user", text: question }]);
     setLoading(true);
     setStatus("Thinking...");
     try {
@@ -81,11 +112,11 @@ function App() {
       });
       setStats(data.stats);
       refreshAfterQuestion(data.question, data.answer);
-      setOutput(`Question:\n${data.question}\n\nAnswer:\n${data.answer}`);
+      setChatMessages((current) => [...current, { role: "assistant", text: data.answer }]);
       setStatus("Answer ready.");
     } catch (error) {
       setStatus(error.message);
-      setOutput(error.message);
+      setChatMessages((current) => [...current, { role: "assistant", text: error.message }]);
     } finally {
       setLoading(false);
     }
@@ -221,23 +252,60 @@ function App() {
     </div>
   );
 
+  const correctAnswers = Math.max(0, Number(stats.correct_answers) || 0);
+  const incorrectAnswers = Math.max(0, Number(stats.incorrect_answers) || 0);
+  const answeredQuestions = correctAnswers + incorrectAnswers;
+  const accuracy = answeredQuestions ? Math.round((correctAnswers / answeredQuestions) * 100) : 0;
+  const scoreHistory = (stats.quiz_scores || []).map(Number).filter(Number.isFinite).slice(-8);
   const statsView = (
     <>
-      <div className="list-item"><h3>Questions asked</h3><p>{stats.questions_asked ?? 0}</p></div>
-      <div className="list-item"><h3>Quizzes completed</h3><p>{stats.quizzes_completed ?? 0}</p></div>
-      <div className="list-item"><h3>Correct answers</h3><p>{stats.correct_answers ?? 0}</p></div>
-      <div className="list-item"><h3>Incorrect answers</h3><p>{stats.incorrect_answers ?? 0}</p></div>
-      <div className="list-item"><h3>Average quiz score</h3><p>{averageScore.toFixed(1)}%</p></div>
+      <div className="stats-cards">
+        <div className="stat-item"><span>Questions asked</span><strong>{Math.max(0, Number(stats.questions_asked) || 0)}</strong></div>
+        <div className="stat-item"><span>Quizzes completed</span><strong>{Math.max(0, Number(stats.quizzes_completed) || 0)}</strong></div>
+        <div className="stat-item"><span>Correct answers</span><strong>{correctAnswers}</strong></div>
+        <div className="stat-item"><span>Average quiz score</span><strong>{averageScore.toFixed(1)}%</strong></div>
+      </div>
+      <div className="stats-charts">
+        <div className="chart-card">
+          <div className="chart-title"><h3>Answer accuracy</h3><strong>{accuracy}%</strong></div>
+          <div className="progress-track"><i style={{ width: `${accuracy}%` }} /></div>
+          <div className="chart-legend"><span className="legend-correct">Correct {correctAnswers}</span><span>Incorrect {incorrectAnswers}</span></div>
+        </div>
+        <div className="chart-card">
+          <div className="chart-title"><h3>Recent quiz scores</h3><span>{scoreHistory.length ? `${scoreHistory.length} quizzes` : "No data"}</span></div>
+          <div className="score-chart">
+            {scoreHistory.length ? scoreHistory.map((score, index) => (
+              <div className="score-bar-wrap" key={`${score}-${index}`}><span>{index + 1}</span><div className="score-bar"><i style={{ height: `${Math.min(100, Math.max(0, score))}%` }} /></div><small>{Math.round(score)}%</small></div>
+            )) : <p className="chart-empty">Complete a quiz to see your score history.</p>}
+          </div>
+        </div>
+      </div>
     </>
   );
 
   const activeCard = {
     ask: (
       <div className="card active">
-        <h2>Ask a question</h2>
-        <p>Get direct help with study questions, homework, and concepts.</p>
-        <textarea id="questionInput" placeholder="Ask anything study-related..." />
-        <button className="primary" onClick={handleAsk} disabled={loading}>Get answer</button>
+        <h2>Ask CampusMate</h2>
+        <p>Have a natural conversation with your study co-pilot.</p>
+        <button className="primary chat-clear" type="button" onClick={() => { setChatMessages([]); setStatus("Conversation cleared."); }}>Clear conversation</button>
+        <div className="chat-thread" aria-live="polite">{chatView}</div>
+        <div className="chat-composer">
+          <textarea
+            id="questionInput"
+            rows="1"
+            placeholder="Message CampusMate..."
+            value={questionDraft}
+            onChange={(event) => setQuestionDraft(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                handleAsk();
+              }
+            }}
+          />
+          <button className="primary" onClick={handleAsk} disabled={loading}>Send</button>
+        </div>
       </div>
     ),
     explain: (
@@ -251,6 +319,7 @@ function App() {
           <option value="advanced">Advanced</option>
         </select>
         <button className="primary" onClick={handleExplain} disabled={loading}>Explain topic</button>
+        {toolOutput()}
       </div>
     ),
     summarize: (
@@ -265,6 +334,7 @@ function App() {
           <option value="beginner-friendly">Beginner-Friendly</option>
         </select>
         <button className="primary" onClick={handleSummarize} disabled={loading}>Summarize</button>
+        {toolOutput()}
       </div>
     ),
     quiz: (
@@ -282,6 +352,7 @@ function App() {
         <input id="quizCount" type="number" min="1" defaultValue="4" />
         <button className="primary" onClick={handleGenerateQuiz} disabled={loading}>Generate quiz</button>
         <div className="quiz-list">{renderQuiz()}</div>
+        {toolOutput()}
       </div>
     ),
     history: (
@@ -301,12 +372,18 @@ function App() {
   }[activeTab];
 
   return (
-    <main className="app-shell">
+    <main className={`app-shell ${isSingleView ? "single-view" : ""}`}>
+      {isSingleView && <a className="back-link" href="/">&lt;- Back to CampusMate AI</a>}
       <section className="hero">
         <div>
           <p className="eyebrow">CampusMate AI</p>
           <h1>Your study co-pilot for questions, summaries, and quizzes.</h1>
           <p className="lede">Use the same learning tools from the CLI in a polished browser interface. Ask questions, explain topics, summarize text, and generate quizzes from one dashboard.</p>
+          <div className="hero-tags" aria-label="CampusMate features">
+            <span><i /> AI tutor</span>
+            <span><i /> Progress tracked</span>
+            <span><i /> Built for students</span>
+          </div>
         </div>
         <div className="profile">
           <label htmlFor="studentName">Student name</label>
@@ -333,11 +410,15 @@ function App() {
 
       <section className="workspace">
         <aside className="sidebar">
+          <a className="sidebar-home" href="/">CampusMate AI <span>Home</span></a>
+          <div className="sidebar-label">Study tools</div>
           {tabs.map(([key, label]) => (
             <button
               key={key}
               className={activeTab === key ? "active" : ""}
-              onClick={() => setActiveTab(key)}
+              onClick={() => {
+                window.location.href = `/react/${key}`;
+              }}
             >
               {label}
             </button>
@@ -349,11 +430,6 @@ function App() {
         </section>
       </section>
 
-      <section className="output">
-        <h2>Workspace output</h2>
-        <p className={status.includes("cannot") || status.includes("invalid") ? "notice" : ""}>{status}</p>
-        <pre>{output}</pre>
-      </section>
     </main>
   );
 }

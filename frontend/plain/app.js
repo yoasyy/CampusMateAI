@@ -20,20 +20,53 @@ const els = {
   questionsAsked: document.getElementById("questionsAsked"),
   quizzesCompleted: document.getElementById("quizzesCompleted"),
   averageScore: document.getElementById("averageScore"),
-  statusText: document.getElementById("statusText"),
-  responseOutput: document.getElementById("responseOutput"),
+  explainOutput: document.getElementById("explainOutput"),
+  summarizeOutput: document.getElementById("summarizeOutput"),
+  quizOutput: document.getElementById("quizOutput"),
   historyList: document.getElementById("historyList"),
   statsDetails: document.getElementById("statsDetails"),
   quizArea: document.getElementById("quizArea")
+  ,chatThread: document.getElementById("chatThread")
 };
 
+const chatMessages = [];
+
 function setStatus(message, tone = "") {
-  els.statusText.textContent = message;
-  els.statusText.className = tone ? `notice ${tone}` : "";
+  document.querySelectorAll(".status-text").forEach((statusText) => {
+    statusText.textContent = message;
+    statusText.className = tone ? `status-text notice ${tone}` : "status-text";
+  });
 }
 
-function setOutput(text) {
-  els.responseOutput.textContent = text;
+function setOutput(text, outputId = "askOutput") {
+  const output = els[outputId];
+  if (!output) {
+    chatMessages.push({ role: "assistant", text });
+    renderChat();
+    return;
+  }
+  output.querySelector("span").textContent = text;
+  output.classList.add("has-output");
+}
+
+function renderChat() {
+  if (!chatMessages.length) return;
+  els.chatThread.innerHTML = chatMessages.map((message) => `
+    <div class="chat-message ${message.role}">
+      <span class="chat-avatar">${message.role === "user" ? "You" : "AI"}</span>
+      <div class="chat-bubble">${escapeHtml(message.text)}</div>
+    </div>
+  `).join("");
+  els.chatThread.scrollTop = els.chatThread.scrollHeight;
+}
+
+function restoreChatFromHistory() {
+  if (chatMessages.length) return;
+  state.history.slice(-8).forEach((item) => {
+    if (item.question) chatMessages.push({ role: "user", text: item.question });
+    if (item.answer) chatMessages.push({ role: "assistant", text: item.answer });
+  });
+  renderChat();
 }
 
 function getSavedName() {
@@ -53,7 +86,7 @@ function renderGreeting() {
 }
 
 function averageQuizScore() {
-  const scores = state.stats.quiz_scores || [];
+  const scores = (state.stats.quiz_scores || []).map(Number).filter(Number.isFinite);
   if (!scores.length) return 0;
   return scores.reduce((sum, value) => sum + value, 0) / scores.length;
 }
@@ -84,13 +117,36 @@ function renderHistory() {
 }
 
 function renderStats() {
+  const questions = Math.max(0, Number(state.stats.questions_asked) || 0);
+  const quizzes = Math.max(0, Number(state.stats.quizzes_completed) || 0);
+  const correct = Math.max(0, Number(state.stats.correct_answers) || 0);
+  const incorrect = Math.max(0, Number(state.stats.incorrect_answers) || 0);
+  const answered = correct + incorrect;
+  const accuracy = answered ? Math.round((correct / answered) * 100) : 0;
+  const scores = (state.stats.quiz_scores || []).map(Number).filter(Number.isFinite).slice(-8);
   const average = averageQuizScore().toFixed(1);
+  const scoreBars = scores.length
+    ? scores.map((score, index) => `<div class="score-bar-wrap"><span>${index + 1}</span><div class="score-bar"><i style="height: ${Math.min(100, Math.max(0, score))}%"></i></div><small>${Math.round(score)}%</small></div>`).join("")
+    : `<p class="chart-empty">Complete a quiz to see your score history.</p>`;
+
   els.statsDetails.innerHTML = `
-    <div class="stat-item"><h3>Questions asked</h3><p>${state.stats.questions_asked ?? 0}</p></div>
-    <div class="stat-item"><h3>Quizzes completed</h3><p>${state.stats.quizzes_completed ?? 0}</p></div>
-    <div class="stat-item"><h3>Correct answers</h3><p>${state.stats.correct_answers ?? 0}</p></div>
-    <div class="stat-item"><h3>Incorrect answers</h3><p>${state.stats.incorrect_answers ?? 0}</p></div>
-    <div class="stat-item"><h3>Average quiz score</h3><p>${average}%</p></div>
+    <div class="stats-cards">
+      <div class="stat-item"><span>Questions asked</span><strong>${questions}</strong></div>
+      <div class="stat-item"><span>Quizzes completed</span><strong>${quizzes}</strong></div>
+      <div class="stat-item"><span>Correct answers</span><strong>${correct}</strong></div>
+      <div class="stat-item"><span>Average quiz score</span><strong>${average}%</strong></div>
+    </div>
+    <div class="stats-charts">
+      <div class="chart-card">
+        <div class="chart-title"><h3>Answer accuracy</h3><strong>${accuracy}%</strong></div>
+        <div class="progress-track"><i style="width: ${accuracy}%"></i></div>
+        <div class="chart-legend"><span class="legend-correct">Correct ${correct}</span><span>Incorrect ${incorrect}</span></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title"><h3>Recent quiz scores</h3><span>${scores.length ? `${scores.length} quizzes` : "No data"}</span></div>
+        <div class="score-chart">${scoreBars}</div>
+      </div>
+    </div>
   `;
 }
 
@@ -111,6 +167,39 @@ function switchPanel(targetId) {
   document.querySelectorAll(".nav-btn").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.target === targetId);
   });
+}
+
+function panelFromPath() {
+  const view = window.location.pathname.split("/").filter(Boolean).pop();
+  return {
+    ask: "askPanel",
+    explain: "explainPanel",
+    summarize: "summarizePanel",
+    quiz: "quizPanel",
+    history: "historyPanel",
+    stats: "statsPanel"
+  }[view] || "askPanel";
+}
+
+function applySingleView() {
+  const view = window.location.pathname.split("/").filter(Boolean).pop();
+  const labels = {
+    ask: "Ask AI",
+    explain: "Explain",
+    summarize: "Summarize",
+    quiz: "Quiz",
+    history: "History",
+    stats: "Stats"
+  };
+
+  if (!labels[view]) return;
+  document.body.classList.add("single-view");
+  document.title = `${labels[view]} | CampusMate AI`;
+  const backLink = document.createElement("a");
+  backLink.className = "back-link";
+  backLink.href = "/";
+  backLink.textContent = "<- Back to CampusMate AI";
+  document.querySelector(".shell").prepend(backLink);
 }
 
 async function requestJson(path, payload) {
@@ -135,6 +224,7 @@ async function refreshBootstrap() {
 
   state.history = data.history || [];
   state.stats = data.stats || state.stats;
+  restoreChatFromHistory();
   renderMetrics();
   renderHistory();
   renderStats();
@@ -195,7 +285,7 @@ async function gradeQuiz() {
   renderStats();
 
   setStatus(`Quiz completed. Score ${score}/${total}.`);
-  setOutput(`Quiz completed.\nScore: ${score}/${total}\nAverage quiz score: ${result.average_quiz_score.toFixed(1)}%`);
+  setOutput(`Score: ${score}/${total}\nAverage quiz score: ${result.average_quiz_score.toFixed(1)}%`, "quizOutput");
 }
 
 async function handleAsk() {
@@ -205,6 +295,9 @@ async function handleAsk() {
     return;
   }
 
+  document.getElementById("questionInput").value = "";
+  chatMessages.push({ role: "user", text: question });
+  renderChat();
   setStatus("Thinking...");
   const data = await requestJson("/api/ask", {
     question,
@@ -216,7 +309,8 @@ async function handleAsk() {
   renderMetrics();
   renderHistory();
   renderStats();
-  setOutput(`Question:\n${data.question}\n\nAnswer:\n${data.answer}`);
+  chatMessages.push({ role: "assistant", text: data.answer });
+  renderChat();
   setStatus("Answer ready.");
 }
 
@@ -230,7 +324,7 @@ async function handleExplain() {
 
   setStatus("Preparing explanation...");
   const data = await requestJson("/api/explain", { topic, level });
-  setOutput(`Topic: ${data.topic}\nDifficulty: ${data.level}\n\n${data.answer}`);
+  setOutput(data.answer, "explainOutput");
   setStatus("Explanation ready.");
 }
 
@@ -244,7 +338,7 @@ async function handleSummarize() {
 
   setStatus("Summarizing...");
   const data = await requestJson("/api/summarize", { text, style });
-  setOutput(`Style: ${data.style}\n\n${data.answer}`);
+  setOutput(data.answer, "summarizeOutput");
   setStatus("Summary ready.");
 }
 
@@ -266,20 +360,40 @@ async function handleGenerateQuiz() {
   });
 
   renderQuiz(data.quiz);
-  setOutput(`Quiz generated for ${data.topic} (${data.level}).`);
+  setOutput(`Quiz generated for ${data.topic} (${data.level}).`, "quizOutput");
   setStatus("Quiz ready.");
 }
 
 async function init() {
+  applySingleView();
   els.studentName.value = getSavedName();
   renderGreeting();
 
   document.querySelectorAll(".nav-btn").forEach((btn) => {
-    btn.addEventListener("click", () => switchPanel(btn.dataset.target));
+    btn.addEventListener("click", () => {
+      const view = btn.dataset.target.replace("Panel", "");
+      window.location.href = `/app/${view}`;
+    });
   });
 
   els.saveName.addEventListener("click", () => {
     saveName(els.studentName.value.trim());
+  });
+
+  document.getElementById("clearChatBtn").addEventListener("click", () => {
+    chatMessages.length = 0;
+    els.chatThread.innerHTML = `<div class="chat-empty">Ask a question to start your study conversation.</div>`;
+    setStatus("Conversation cleared.");
+  });
+
+  document.getElementById("questionInput").addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      handleAsk().catch((error) => {
+        setStatus(error.message, "notice");
+        setOutput(error.message);
+      });
+    }
   });
 
   document.getElementById("askBtn").addEventListener("click", () => {
@@ -292,23 +406,25 @@ async function init() {
   document.getElementById("explainBtn").addEventListener("click", () => {
     handleExplain().catch((error) => {
       setStatus(error.message, "notice");
-      setOutput(error.message);
+      setOutput(error.message, "explainOutput");
     });
   });
 
   document.getElementById("summarizeBtn").addEventListener("click", () => {
     handleSummarize().catch((error) => {
       setStatus(error.message, "notice");
-      setOutput(error.message);
+      setOutput(error.message, "summarizeOutput");
     });
   });
 
   document.getElementById("generateQuizBtn").addEventListener("click", () => {
     handleGenerateQuiz().catch((error) => {
       setStatus(error.message, "notice");
-      setOutput(error.message);
+      setOutput(error.message, "quizOutput");
     });
   });
+
+  switchPanel(panelFromPath());
 
   await refreshBootstrap();
 }
