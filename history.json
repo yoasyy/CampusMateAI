@@ -2,5 +2,14 @@
     {
         "question": "What is Python?",
         "answer": "Python is a **programming language** used to tell computers what to do.\n\n### In simple words:\nIt lets people write instructions for computers in a way that is easier to read than many other languages.\n\n### What Python is used for:\n- building websites\n- analyzing data\n- automating tasks\n- making games\n- artificial intelligence and machine learning\n\n### Why people like it:\n- **easy to learn**\n- **readable**\n- **popular** in school, research, and industry\n\n### Short example:\n```python\nprint(\"Hello, world!\")\n```\nThis tells the computer to display the text **Hello, world!**\n\nIf you want, I can also explain **how Python works** or **how to start learning it**."
+    },
+    {
+        "question": "What is python?",
+        "answer": "Python is a **programming language** used to tell computers what to do.\n\n### In simple words:\n- It helps people **write code** for apps, websites, games, data analysis, and more.\n- It is known for being **easy to read and learn** compared with some other programming languages.\n\n### Example:\n```python\nprint(\"Hello, world!\")\n```\nThis code tells the computer to display the text **Hello, world!**\n\n### Common uses of Python:\n- Web development\n- Data science and machine learning\n- Automation\n- Game development\n- Artificial intelligence\n\nIf you want, I can also explain **why Python is popular** or show you **how to write your first Python program**.",
+        "student_name": "Asja"
+    },
+    {
+        "question": "Java Script",
+        "answer": "It looks like you mean **JavaScript**.\n\n**JavaScript** is a programming language used mainly to make websites interactive.  \nFor example, it can:\n- make buttons work,\n- show pop-up messages,\n- update page content without reloading,\n- create animations and forms.\n\n### Simple example\n```javascript\nlet name = \"Ali\";\nconsole.log(\"Hello, \" + name);\n```\n\nThis prints:\n```javascript\nHello, Ali\n```\n\n### Key idea\n- **HTML** = structure of a webpage\n- **CSS** = style/design\n- **JavaScript** = behavior/interactivity\n\nIf you want, I can also explain:\n1. **JavaScript basics**\n2. **difference between Java and JavaScript**\n3. **how to start learning JavaScript**"
     }
 ]

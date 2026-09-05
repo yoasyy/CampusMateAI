@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusMate AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/plain/styles.css" />
+</head>
+<body>
+  <div class="bg-orb orb-a"></div>
+  <div class="bg-orb orb-b"></div>
+
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">CampusMate AI</p>
+        <h1>Your study co-pilot for questions, summaries, and quizzes.</h1>
+        <p class="lede">Use the same learning tools from the CLI in a polished browser interface. Ask questions, explain topics, summarize text, and generate quizzes from one dashboard.</p>
+      </div>
+
+      <div class="profile-card">
+        <label for="studentName">Student name</label>
+        <div class="inline-row">
+          <input id="studentName" type="text" placeholder="Enter your name" />
+          <button id="saveName" class="btn btn-ghost">Save</button>
+        </div>
+        <p id="greeting" class="subtle">You are browsing as a guest.</p>
+      </div>
+    </section>
+
+    <section class="stats-grid">
+      <article class="metric-card">
+        <span>Questions asked</span>
+        <strong id="questionsAsked">0</strong>
+      </article>
+      <article class="metric-card">
+        <span>Quizzes completed</span>
+        <strong id="quizzesCompleted">0</strong>
+      </article>
+      <article class="metric-card">
+        <span>Average quiz score</span>
+        <strong id="averageScore">0.0%</strong>
+      </article>
+      <article class="metric-card">
+        <span>Knowledge sparks</span>
+        <strong>4</strong>
+      </article>
+    </section>
+
+    <section class="layout">
+      <aside class="panel">
+        <button class="nav-btn active" data-target="askPanel">Ask AI</button>
+        <button class="nav-btn" data-target="explainPanel">Explain</button>
+        <button class="nav-btn" data-target="summarizePanel">Summarize</button>
+        <button class="nav-btn" data-target="quizPanel">Quiz</button>
+        <button class="nav-btn" data-target="historyPanel">History</button>
+        <button class="nav-btn" data-target="statsPanel">Stats</button>
+      </aside>
+
+      <section class="workspace">
+        <article class="card active" id="askPanel">
+          <div class="card-head">
+            <h2>Ask a question</h2>
+            <p>Get direct help with study questions, homework, and concepts.</p>
+          </div>
+          <textarea id="questionInput" placeholder="Ask anything study-related..."></textarea>
+          <button id="askBtn" class="btn">Get answer</button>
+        </article>
+
+        <article class="card" id="explainPanel">
+          <div class="card-head">
+            <h2>Explain a topic</h2>
+            <p>Choose a difficulty level so the explanation matches your pace.</p>
+          </div>
+          <input id="topicInput" type="text" placeholder="Enter a topic" />
+          <select id="difficultyLevel">
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+          </select>
+          <button id="explainBtn" class="btn">Explain topic</button>
+        </article>
+
+        <article class="card" id="summarizePanel">
+          <div class="card-head">
+            <h2>Summarize text</h2>
+            <p>Trim long content into a focused summary or bullet points.</p>
+          </div>
+          <textarea id="summaryInput" placeholder="Paste text to summarize..."></textarea>
+          <select id="summaryStyle">
+            <option value="short">Short</option>
+            <option value="detailed">Detailed</option>
+            <option value="bullet points">Bullet Points</option>
+            <option value="beginner-friendly">Beginner-Friendly</option>
+          </select>
+          <button id="summarizeBtn" class="btn">Summarize</button>
+        </article>
+
+        <article class="card" id="quizPanel">
+          <div class="card-head">
+            <h2>Generate quiz</h2>
+            <p>Create a multiple-choice quiz and grade it in the browser.</p>
+          </div>
+          <div class="grid-two">
+            <input id="quizTopic" type="text" placeholder="Quiz topic" />
+            <select id="quizLevel">
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+          </div>
+          <input id="quizCount" type="number" min="1" value="4" />
+          <button id="generateQuizBtn" class="btn">Generate quiz</button>
+          <div id="quizArea" class="quiz-area"></div>
+        </article>
+
+        <article class="card" id="historyPanel">
+          <div class="card-head">
+            <h2>Previous questions</h2>
+            <p>Your recent questions and answers stay saved locally.</p>
+          </div>
+          <div id="historyList" class="list-stack"></div>
+        </article>
+
+        <article class="card" id="statsPanel">
+          <div class="card-head">
+            <h2>Learning stats</h2>
+            <p>Track how your study sessions are building up over time.</p>
+          </div>
+          <div id="statsDetails" class="list-stack"></div>
+        </article>
+      </section>
+    </section>
+
+    <section class="response-panel">
+      <div class="response-head">
+        <h2>Workspace output</h2>
+        <p id="statusText">Ready when you are.</p>
+      </div>
+      <pre id="responseOutput">Pick a tool and start learning.</pre>
+    </section>
+  </main>
+
+  <script src="/plain/app.js"></script>
+</body>
+</html>

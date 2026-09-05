@@ -22,6 +22,7 @@ Asja Berisha
 ## Technologies Used
 
 - Python
+- Flask
 - OpenAI API
 - JSON
 - python-dotenv
@@ -59,6 +60,26 @@ python main.py
 The CampusMate AI menu will appear.
 
 Choose an option from 1 to 8 and follow the instructions displayed in the terminal.
+
+## Web Front Ends
+
+This project now includes two browser front ends that share the same Python API:
+
+1. Plain HTML/JavaScript version
+2. React version
+
+Install the web dependency:
+
+pip install -r requirements.txt
+
+Run the web app:
+
+python web_app.py
+
+Then open:
+
+- `http://127.0.0.1:5000/` for the plain HTML/JavaScript UI
+- `http://127.0.0.1:5000/react` for the React UI
 
 ## Data Storage
 
@@ -102,8 +123,12 @@ AI-generated information may contain mistakes. Important information should alwa
 
 CampusMateAI/
 - main.py
+- web_app.py
+- data_store.py
 - ai_service.py
 - student.py
+- frontend/plain/
+- frontend/react/
 - history.json
 - stats.json
 - requirements.txt
